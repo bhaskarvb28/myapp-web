@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
-import './App.css'
+import "./App.css";
+
 function App() {
   const [notes, setNotes] = useState([]);
 
@@ -10,7 +11,13 @@ function App() {
         .from("notes")
         .select("*");
 
-      if (!error) setNotes(data);
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      // ⚠️ BUG: assumes at least one note exists
+      setNotes(data.slice(0, data.length - 1));
     }
 
     load();
@@ -18,9 +25,8 @@ function App() {
 
   return (
     <div style={{ padding: 40 }}>
-      <h1>MyApp – DEV</h1>
-      <p>React dev environment is running ✅</p>
-
+      <h1>MyApp</h1>
+      <p>Notes loaded ✅</p>
 
       <ul>
         {notes.map((n) => (
